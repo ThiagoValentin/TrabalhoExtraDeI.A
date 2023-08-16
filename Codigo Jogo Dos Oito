@@ -1,0 +1,117 @@
+//Thiago Valentin Rodrigues e Carlos Eduardo Gouveia Cabral
+//Tendo em vista que os pontos negativos do nosso ultimo codigo foram:
+//identificadores em português e Excecesso de abreviações;
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Função para verificar se o tabuleiro é válido e seguir em frente
+
+int is_valid(int board[3][3]) {
+    int count[9] = {0}; // Ele começa uma array para contar ocorrências (assim como no jogo da velha) dos números de 0 a 8
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            count[board[i][j]]++; // Conta a ocorrência de cada número
+        }
+    }
+
+    // Verifica se todos os números de 0 a 8 aparecem exatamente uma vez para não dar erro
+    for (int i = 0; i < 9; i++) {
+        if (count[i] != 1) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+// Cria uma função para trocar dois elementos no tabuleiro
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Cria uma função para imprimir o tabuleiro
+void print_board(int board[3][3]) {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (board[i][j] != 0) {
+                printf("%d", board[i][j]);
+            } else {
+                printf(" ");
+            }
+            
+            if (j < 2) {
+                printf(" | ");
+            }
+        }
+        printf("\n");
+        if (i < 2) {
+            printf("--|---|--\n");
+        }
+    }
+}
+
+// Cria uma função para resolver o tabuleiro
+void solve_board(int board[3][3]) {
+    int solved_board[3][3] = {
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 0}
+    };
+
+    printf("\nMovimentos para resolver o tabuleiro:\n\n");
+
+    while (!is_valid(board)) {
+        int row, col;
+
+        // Aqui ele vai procurar a posição do espaço vazio
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == 0) {
+                    row = i;
+                    col = j;
+                    break;
+                }
+            }
+        }
+
+        // Aqui é onde ele terá o movimento para a direita
+        if (col < 2) {
+            swap(&board[row][col], &board[row][col + 1]);
+            print_board(board);
+        }
+        // 100Movimento para baixo
+        if (row < 2) {
+            swap(&board[row][col], &board[row + 1][col]);
+            print_board(board);
+        }
+    }
+
+    printf("\nO tabuleiro foi resolvido!\n");
+}
+
+int main() {
+    int board[3][3];
+
+    printf("Coloque a disposição do tabuleiro (use 0 para o espaço vazio como 1 2 0):\n");
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            scanf("%d", &board[i][j]);
+        }
+    }
+
+    if (!is_valid(board)) {
+        printf("Tabuleiro inválido!\n");
+        return 1;
+    }
+
+    printf("\nTabuleiro informado:\n");
+    print_board(board);
+
+    solve_board(board);
+
+    return 0;
+}
